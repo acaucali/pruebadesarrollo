@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tarjeta")
+@Table(name="TARJETA")
 public class Tarjeta implements Serializable{
 
 	@Id
@@ -18,19 +18,22 @@ public class Tarjeta implements Serializable{
 	private Long tarjetaId;
 	
 	@Column(nullable=true)
-	private Integer numeroTarjeta; 
+	private Long numeroTarjeta; 
+
+	@Column(nullable=true)
+	private Integer numeroValidacion; 
 	
 	@Column(nullable=true)
 	private String titular; 
 	
 	@Column(nullable=true)
-	private Integer cedula; 
+	private Long cedula; 
 	
 	@Column(nullable=true)
 	private Byte tipo; 
 	
 	@Column(nullable=true)
-	private Integer telefono; 
+	private Long telefono; 
 	
 	@Column(nullable=true)
 	private Byte estado; 
@@ -44,11 +47,11 @@ public class Tarjeta implements Serializable{
 		this.tarjetaId = tarjetaId;
 	}
 
-	public Integer getNumeroTarjeta() {
+	public Long getNumeroTarjeta() {
 		return numeroTarjeta;
 	}
 
-	public void setNumeroTarjeta(Integer numeroTarjeta) {
+	public void setNumeroTarjeta(Long numeroTarjeta) {
 		this.numeroTarjeta = numeroTarjeta;
 	}
 
@@ -60,11 +63,11 @@ public class Tarjeta implements Serializable{
 		this.titular = titular;
 	}
 
-	public Integer getCedula() {
+	public Long getCedula() {
 		return cedula;
 	}
 
-	public void setCedula(Integer cedula) {
+	public void setCedula(Long cedula) {
 		this.cedula = cedula;
 	}
 
@@ -76,11 +79,11 @@ public class Tarjeta implements Serializable{
 		this.tipo = tipo;
 	}
 
-	public Integer getTelefono() {
+	public Long getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(Integer telefono) {
+	public void setTelefono(Long telefono) {
 		this.telefono = telefono;
 	}
 
@@ -90,6 +93,14 @@ public class Tarjeta implements Serializable{
 
 	public void setEstado(Byte estado) {
 		this.estado = estado;
+	}
+	
+	public Integer getNumeroValidacion() {
+		return numeroValidacion;
+	}
+
+	public void setNumeroValidacion(Integer numeroValidacion) {
+		this.numeroValidacion = numeroValidacion;
 	}
 
 

@@ -1,1 +1,47 @@
-<p>transaccion works!</p>
+<detalle-transaccion [transaccion]="transaccionSeleccionada"></detalle-transaccion>
+<div class="card border-primary mb-5 my-5 ">
+  <div class="card-header"><h5>Transacciones</h5></div>
+  <div class="card-body text-black">
+    
+    <div class="my-2 text-left">
+      <button class="btn btn-rounded bg-white" (click)="crearTransaccion()" type="button" placement="bottom" ngbTooltip="Crear Transacción">
+        <i class="far fa-plus-square fa-lg"></i></button>
+    </div>
+
+    <div *ngIf="transacciones?.length==0" class="alert alert-info">
+      No hay registros en la base de datos!
+    </div>
+
+    <div class="table-responsive">
+      <table mdbTable class="table table-bordered tabled-striped table-sm" id="tabla" style="border-collapse: collapse;">
+        <thead>
+          <tr class="text-white bg-primary">
+            <td width="50">Acciones</td>
+            <td>Numero Referencia</td>
+            <td>Direccion Compra</td>
+            <td>Estado</td>
+            <td>Total Compra</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let el of elements | paginate: {itemsPerPage: 10, currentPage: pageCali, id: 'pageCal'}">
+            <td width="50" >
+              <i class="fa fa-ban" (click)='delete(el)' style="cursor: pointer;"></i>
+            </td>
+            <td >{{el.numeroReferencia}} </td>
+            <td >{{el.direccionCompra}} </td>
+            <td >
+              <div *ngIf="el.estado == '1'">Creada</div>
+              <div *ngIf="el.estado == '2'">Enrolada</div>
+            </td>
+            <td >{{el.totalCompra}} </td>
+          </tr>
+        </tbody>
+        
+      </table>
+      <pagination-controls id="pageCal" previousLabel="Anterior"
+        nextLabel="Siguiente" (pageChange)="pageCali = $event"></pagination-controls>
+    </div>
+    
+  </div>
+</div>

@@ -18,7 +18,7 @@ public class Transaccion implements Serializable{
 	private Long transaccionId;
 	
 	@Column(nullable=true)
-	private Integer numeroReferencia; 
+	private Long numeroReferencia; 
 	
 	@Column(nullable=true)
 	private Double totalCompra; 
@@ -38,11 +38,11 @@ public class Transaccion implements Serializable{
 		this.transaccionId = transaccionId;
 	}
 
-	public Integer getNumeroReferencia() {
+	public Long getNumeroReferencia() {
 		return numeroReferencia;
 	}
 
-	public void setNumeroReferencia(Integer numeroTarjeta) {
+	public void setNumeroReferencia(Long numeroTarjeta) {
 		this.numeroReferencia = numeroTarjeta;
 	}
 

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Tarjeta } from './model/tarjeta';
-import swal from 'sweetalert2';
-import { TarjetaService } from './model/tarjeta.service';
+import Swal from 'sweetalert2';
+import { ModalConsultaService } from './consultar-tarjeta/modal.service';
 import { ModalService } from './detalle-tarjeta/modal.service';
-import { ActivatedRoute } from '@angular/router';
+import { ModalEnrolarService } from './enrolar-tarjeta/modal.service';
+import { Tarjeta } from './model/tarjeta';
+import { TarjetaService } from './model/tarjeta.service';
 
 @Component({
   selector: 'app-tarjeta',
@@ -12,78 +13,82 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class TarjetaComponent implements OnInit {
 
-  pageCali: number =1;
+  pageTarj: number =1;
  
 
-  tarjetas: Tarjeta[] | undefined;
+  tarjetas: Tarjeta[];
   paginador: any;
-  tarjetaSeleccionada: Tarjeta | undefined;
+  tarjetaSeleccionada: Tarjeta;
 
   elements: any = [];
   previous: any = [];
 
-  firstItemIndex: any;
-  lastItemIndex: any;
+  firstItemIndex;
+  lastItemIndex;
 
-  constructor(private tarjetaService: TarjetaService,
-    public modalservice: ModalService, 
-    private activatedRoute: ActivatedRoute) { }
+  constructor(private tarjetasService: TarjetaService,
+    public modalservice: ModalService, public consultaModal: ModalConsultaService, public enrolarModal: ModalEnrolarService) { }
 
   ngOnInit(): void {
+    this.getTarjetas();
   }
 
-  /* metodos calificaciones */
-
   delete(tarjeta: Tarjeta): void{
-    swal.fire({
+
+    
+    var numero = tarjeta.numeroTarjeta.toString().substring(0, 6) + '****' + tarjeta.numeroTarjeta.toString().substring(10);
+    Swal.fire({
       title: 'Está seguro?',
-      text:  `¿Seguro que desea eliminar la calificación ${tarjeta.numeroTarjeta} ?`,
-      type: 'warning',
+      text:  `¿Seguro que desea eliminar la tarjeta ${numero} ?`,
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonClass: 'btn btn-success',
-      cancelButtonClass: 'btn btn-danger',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
       confirmButtonText: 'Si, eliminar!',
       cancelButtonText: 'No, cancelar!',
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33'
     }).then((result) => {
-      if (result.value) {
-        this.tarjetaService.delete(tarjeta.tarjetaId).subscribe(
+      if (result.isConfirmed) {
+        this.tarjetasService.delete(tarjeta.tarjetaId).subscribe(
           response =>{
             this.getTarjetas();
-            swal.fire(
-              'Calificación eliminada!',
-              'La calificación se ha eliminado con éxito',
+            Swal.fire(
+              'Tarjeta eliminada!',
+              'La tarjeta se ha eliminada con éxito',
               'success'
             )
           }
         )
-        
       }
     })
+
   }
   
   abrirModal(tarjeta: Tarjeta){
     this.tarjetaSeleccionada= tarjeta;
-    this.modalservice.abrirModal();
+    this.consultaModal.abrirModal();
   }
 
   crearTarjeta(){
     this.tarjetaSeleccionada = new Tarjeta();
     this.modalservice.abrirModal();
   }
-  
+
+  enrolarTarjeta(){
     
+    this.enrolarModal.abrirModal();
+  }
+  
   getTarjetas(){
     this.tarjetas = null;
     this.elements = [];
     this.previous = [];
-    this.calificacionesService.getCalificacionesList().subscribe(response =>{
-      this.calificaciones = response;
-      if(this.calificaciones.length >0){
-        this.calificaciones.forEach(cal =>{
-          this.elements.push({calificacionesRiesgoId: cal.calificacionesRiesgoId, calificacionesRiesgo: cal.calificacionesRiesgo, calificacionesRiesgoMaximo: cal.calificacionesRiesgoMaximo, 
-            calificacionesRiesgoMinimo: cal.calificacionesRiesgoMinimo, calificacionesRiesgoColor: cal.calificacionesRiesgoColor, calificacionesRiesgoAccion: cal.calificacionesRiesgoAccion});
+    this.tarjetasService.getTarjetasList().subscribe(response =>{
+      this.tarjetas = response;
+      if(this.tarjetas.length >0){
+        this.tarjetas.forEach(tar =>{
+          var numero = tar.numeroTarjeta.toString().substring(0, 6) + '****' + tar.numeroTarjeta.toString().substring(10);
+          this.elements.push({tarjetaId: tar.tarjetaId, numeroTarjeta: numero, titular: tar.titular, 
+            cedula: tar.cedula, tipo: tar.tipo, telefono: tar.telefono, estado: tar.estado});
         });
       }
       

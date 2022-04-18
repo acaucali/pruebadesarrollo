@@ -1,17 +1,20 @@
+<detalle-tarjeta [tarjeta]="tarjetaSeleccionada"></detalle-tarjeta>
+<consultar-tarjeta [tarjeta]="tarjetaSeleccionada"></consultar-tarjeta>
+<enrolar-tarjeta></enrolar-tarjeta>
 
 <div class="card border-primary mb-5 my-5 ">
   <div class="card-header"><h5>Tarjetas</h5></div>
   <div class="card-body text-black">
     
     <div class="my-2 text-left">
-      <button class="btn btn-rounded bg-white" (click)="crearCliente()" type="button" placement="bottom" ngbTooltip="Crear Calificación">
+      <button class="btn btn-rounded bg-white" (click)="crearTarjeta()" type="button" placement="bottom" ngbTooltip="Crear Tarjeta">
         <i class="far fa-plus-square fa-lg"></i></button>
-      <button class="btn btn-rounded bg-white " (click)="descargarPDF()" type="button" *ngIf="calificaciones && calificaciones.length>0"
-        placement="bottom" ngbTooltip="Descargar PDF"><i class="far fa-file-pdf fa-lg"></i></button>
-
+      <button class="btn btn-rounded bg-white" (click)="enrolarTarjeta()" type="button" placement="bottom" ngbTooltip="Enrolar Tarjeta">
+        <i class="fa fa-arrow-right"></i></button>
+       
     </div>
 
-    <div *ngIf="calificaciones?.length==0" class="alert alert-info">
+    <div *ngIf="tarjetas?.length==0" class="alert alert-info">
       No hay registros en la base de datos!
     </div>
 
@@ -20,37 +23,37 @@
         <thead>
           <tr class="text-white bg-primary">
             <td width="50">Acciones</td>
-            <td>Calificación</td>
-            <td>Rango mínimo</td>
-            <td>Rango máximo</td>
-            <td>Color</td>
-            <td>Acción a tomar</td>
+            <td>Numero Tarjeta</td>
+            <td>Titular</td>
+            <td>Cedula</td>
+            <td>Estado</td>            
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let el of elements | paginate: {itemsPerPage: 10, currentPage: pageCali, id: 'pageCal'}">
+          <tr *ngFor="let el of elements | paginate: {itemsPerPage: 10, currentPage: pageTarj, id: 'pageTar'}">
             <td width="50" >
                 &nbsp;
-              <i class="fas fa-edit" (click)="abrirModal(el)" style="cursor: pointer;"></i>
+              <i class="fas fa-eye" (click)="abrirModal(el)" style="cursor: pointer;"></i>
               &nbsp;&nbsp;
+              
               <i class="fas fa-trash-alt" (click)='delete(el)' style="cursor: pointer;"></i>
+              
             </td>
-            <td >{{el.calificacionesRiesgo}} </td>
-            <td >{{el.calificacionesRiesgoMinimo}} </td>
-            <td >{{el.calificacionesRiesgoMaximo}} </td>
-            <td >
-              <div id="red" *ngIf="el.calificacionesRiesgoColor == 'rojo'"></div>
-              <div id="orange" *ngIf="el.calificacionesRiesgoColor == 'naranja'"></div>
-              <div id="yellow" *ngIf="el.calificacionesRiesgoColor == 'amarillo'"></div>
-              <div id="green" *ngIf="el.calificacionesRiesgoColor == 'verde'"></div>
+            <td >{{el.numeroTarjeta}} </td>
+            <td >{{el.titular}} </td>
+            <td >{{el.cedula}} </td>
+            <td>
+              <div *ngIf="el.estado == '1'">Creada</div>
+              <div *ngIf="el.estado == '2'">Enrolada</div>
+          
             </td>
-            <td >{{el.calificacionesRiesgoAccion}} </td>
+           
           </tr>
         </tbody>
         
       </table>
-      <pagination-controls id="pageCal" previousLabel="Anterior"
-        nextLabel="Siguiente" (pageChange)="pageCali = $event"></pagination-controls>
+      <pagination-controls id="pageTar" previousLabel="Anterior"
+        nextLabel="Siguiente" (pageChange)="pageTarj = $event"></pagination-controls>
     </div>
     
   </div>

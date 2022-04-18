@@ -1,8 +1,10 @@
 package com.credibanco.assesment.card.controllers;
 
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.credibanco.assesment.card.model.Tarjeta;
 import com.credibanco.assesment.card.service.TarjetaService;
+
 
 @CrossOrigin(origins= {"http://localhost:4200","*"})
 @RestController
@@ -70,6 +73,8 @@ public class TarjetaRestController {
 	public ResponseEntity<?> create(@Validated @RequestBody Tarjeta tarjetaN, BindingResult result) {
 		
 		Tarjeta tarjetaNew= null;
+		String cadena ="";
+		MessageDigest md = null;
 		
 		Map<String, Object> response = new HashMap<>();
 		
@@ -85,21 +90,32 @@ public class TarjetaRestController {
 		
 		try { 
 			
-			tarjetaNew= tarjetaService.save(tarjetaN);
+			
+			
+			 int numeroAleatorio = 0;
+		     Random rd = new Random();
+		     numeroAleatorio = rd.nextInt(100)+1;
+		     
+		     tarjetaN.setNumeroValidacion(numeroAleatorio);		     
+		     tarjetaN.setEstado((byte) 1);// estado creado
+		     
+		     tarjetaNew= tarjetaService.save(tarjetaN);
+		     
+		     cadena += "Numero validación: " + numeroAleatorio + ", Identificador del Sistema: " + tarjetaN.getTarjetaId().toString();
 
 		}catch(DataAccessException e) {
 			response.put("mensaje", "Error al realizar el insert en la base de datos!");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.put("mensaje", "La tarjeta ha sido creada con Exito!");
+		response.put("mensaje", "La tarjeta ha sido creada con Exito " + cadena);
 		response.put("tarjeta", tarjetaNew);
 		return new ResponseEntity<Map<String, Object>> (response,HttpStatus.CREATED);
 	}
 	
 	//servicio que actualiza una tarjeta
-	@PutMapping("/tarjeta/{id}")
-	public ResponseEntity<?>  update(@Validated @RequestBody Tarjeta tarjeta, BindingResult result, @PathVariable Long id) {
+	@PutMapping("/tarjeta/{id}/{numero}")
+	public ResponseEntity<?>  update(BindingResult result, @PathVariable Long id, @PathVariable Long numero) {
 		Tarjeta tarjetaActual= tarjetaService.findById(id);
 		Tarjeta tarjetaUpdated = null;
 		Map<String, Object> response = new HashMap<>();
@@ -121,12 +137,13 @@ public class TarjetaRestController {
 		
 		try{
 					
-			tarjetaActual.setCedula(tarjeta.getCedula());
-			tarjetaActual.setEstado(tarjeta.getEstado());
-			tarjetaActual.setNumeroTarjeta(tarjeta.getNumeroTarjeta());
-			tarjetaActual.setTelefono(tarjeta.getTelefono());
-			tarjetaActual.setTipo(tarjeta.getTipo());
-			tarjetaActual.setTitular(tarjeta.getTitular());
+			if(tarjetaActual.getNumeroValidacion() == numero.intValue()) {
+				tarjetaActual.setEstado((byte) 2);
+			}else {
+				 response.put("mensaje", "Error, no se pudo editar, la tarjeta ID: ".concat(id.toString().concat(" numero validacion incorrecto!"))); 	
+				 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			}
+	
 																	
 			tarjetaUpdated=tarjetaService.save(tarjetaActual);
 		

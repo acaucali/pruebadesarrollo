@@ -1,9 +1,9 @@
-export class Transaccion{
+export class Transaccion {
 
-    transaccionId: number | undefined;
-    numeroReferencia: number | undefined;
-    totalCompra: number | undefined;
-    direccionCompra: String | undefined;
-    estado: number | undefined;
-
+    transaccionId: number;
+    numeroReferencia: number;
+    totalCompra: number;
+    direccionCompra: String;
+    estado: number; 
+    
 }

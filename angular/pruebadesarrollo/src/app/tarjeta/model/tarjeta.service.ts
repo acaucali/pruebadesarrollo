@@ -1,19 +1,24 @@
-import { Injectable } from "@angular/core";
-import { URL_BACKEND } from "src/app/config/config";
-import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Router } from "@angular/router";
-import { Tarjeta } from "./tarjeta";
-import { map, catchError } from 'rxjs/operators';
-import { Observable, of , throwError} from 'rxjs';
-import swal from 'sweetalert2';
+import { Injectable } from '@angular/core';
 
-@Injectable()
+import { Observable, of , throwError} from 'rxjs';
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
+import swal from 'sweetalert2';
+import { Router } from '@angular/router';
+
+import { URL_BACKEND } from 'src/app/config/config';
+import { Tarjeta } from './tarjeta';
+
+
+@Injectable({
+  providedIn: 'root'
+})
 
 export class TarjetaService {
 
-  private urlEndPoint:string =URL_BACKEND+'/api/pruebadesarrollo/tarjeta';
+  private urlEndPoint:string =URL_BACKEND+'/api/pruebadesarrollo/tarjeta/tarjeta';
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
-  public tarjetas: Tarjeta[] | undefined;
+  public tarjetas: Tarjeta[];
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -49,7 +54,7 @@ export class TarjetaService {
     );
   }
 
-  getTarjeta(id: any): Observable<Tarjeta>{
+  getTarjeta(id): Observable<Tarjeta>{
     return this.http.get<Tarjeta>(`${this.urlEndPoint}/${id}`).pipe(
       catchError(e=>{
         this.router.navigate(['/tarjetas']);
@@ -60,8 +65,8 @@ export class TarjetaService {
     );
   }
 
-  update(tarjeta: Tarjeta): Observable<any>{
-    return this.http.put<any>(`${this.urlEndPoint}/${tarjeta.tarjetaId}`, tarjeta, {headers: this.httpHeaders }).pipe(
+  update(id: number, numero: number): Observable<any>{
+    return this.http.put<any>(`${this.urlEndPoint}/${id}/${numero}`, {headers: this.httpHeaders }).pipe(
       catchError(e =>{
         if(e.status==400){
           return throwError(e);
@@ -85,5 +90,3 @@ export class TarjetaService {
 
 
 }
-
-
